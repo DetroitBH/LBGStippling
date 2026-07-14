@@ -102,7 +102,7 @@ method = '''    private void showCalibrationDialog() {
                         prefs.setSensorOffset(newOffset);
                         prefs.setOnThreshold(25.0f);
                         render();
-                        sendServiceAction(ThermostatService.ACTION_FORCE_REFRESH);
+                        sendServiceAction(ThermostatService.ACTION_REFRESH);
                         Toast.makeText(this,
                                 "Готово: " + formatNumber(smartValue) + " °C, поправка "
                                         + String.format(Locale.CANADA, "%+.1f °C", newOffset),
