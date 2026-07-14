@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   build:
@@ -42,15 +43,36 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0" "platform-tools" >/tmp/sdk-install.log 2>&1
 
       - name: Build debug APK
+        id: apk_build
+        continue-on-error: true
         working-directory: /tmp/midea-build
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon --stacktrace assembleDebug
+          ./gradlew --no-daemon --stacktrace assembleDebug > /tmp/midea-build.log 2>&1
+
+      - name: Report build error on pull request
+        if: steps.apk_build.outcome == 'failure' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo '### Midea Comfort build error'
+            echo
+            echo '```text'
+            tail -n 180 /tmp/midea-build.log
+            echo '```'
+          } > /tmp/build-comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/build-comment.md
+
+      - name: Stop after failed build
+        if: steps.apk_build.outcome == 'failure'
+        run: exit 1
 
       - name: Upload APK
+        if: steps.apk_build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: MideaComfort-debug-apk
