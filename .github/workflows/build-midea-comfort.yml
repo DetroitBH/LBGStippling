@@ -28,6 +28,7 @@ jobs:
           mkdir -p /tmp/midea-build
           unzip -q /tmp/midea-source.zip -d /tmp/midea-build
           python midea_fix_payload/apply_fix.py
+          python midea_fix_payload/apply_fix_v202.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -76,7 +77,7 @@ jobs:
         if: steps.apk_build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: MideaComfort-FIX-apk
+          name: MideaComfort-FIX-2.0.2-apk
           path: /tmp/midea-build/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
