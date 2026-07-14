@@ -55,6 +55,15 @@ jobs:
           chmod +x ./gradlew
           ./gradlew --no-daemon --stacktrace assembleDebug > /tmp/midea-build.log 2>&1
 
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MideaComfort-FIX-build-log
+          path: /tmp/midea-build.log
+          if-no-files-found: warn
+          retention-days: 2
+
       - name: Report build error on pull request
         if: steps.apk_build.outcome == 'failure' && github.event_name == 'pull_request'
         env:
