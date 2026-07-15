@@ -29,6 +29,7 @@ jobs:
           unzip -q /tmp/midea-source.zip -d /tmp/midea-build
           python midea_fix_payload/apply_fix.py
           python midea_fix_payload/apply_fix_v202.py
+          python midea_fix_payload/apply_night_mode.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -59,7 +60,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: MideaComfort-FIX-build-log
+          name: MideaComfort-FIX-night-build-log
           path: /tmp/midea-build.log
           if-no-files-found: warn
           retention-days: 2
@@ -70,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           {
-            echo '### Midea Comfort FIX build error'
+            echo '### Midea Comfort FIX night build error'
             echo
             echo '```text'
             tail -n 180 /tmp/midea-build.log
@@ -86,7 +87,7 @@ jobs:
         if: steps.apk_build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: MideaComfort-FIX-2.0.2-apk
+          name: MideaComfort-FIX-2.1.0-night-apk
           path: /tmp/midea-build/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
