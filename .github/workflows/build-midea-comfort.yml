@@ -31,6 +31,7 @@ jobs:
           python midea_fix_payload/apply_fix_v202.py
           python midea_fix_payload/apply_night_mode.py
           python midea_fix_payload/apply_night_temperature.py
+          python midea_fix_payload/apply_night_temperature_compile_fix.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
